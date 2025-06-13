@@ -35,8 +35,12 @@ const VoiceTranslator: React.FC = () => {
     onFinalResult: async (transcript: string, confidence: number) => {
       console.log(`Final result: "${transcript}" (confidence: ${confidence})`);
 
-      await handleFinalResult(transcript);
-      // Audio will only play when user clicks the play button
+      const translation = await handleFinalResult(transcript);
+
+      // Auto-play the translated audio
+      if (translation) {
+        await playUzbekAudio(translation);
+      }
     },
     onError: (error: Error) => {
       console.error("Speech recognition error:", error);
@@ -92,10 +96,7 @@ const VoiceTranslator: React.FC = () => {
 
       <LiveIndicator isVisible={isListening} />
 
-      <TranslationContainer
-        liveTranslation={liveTranslation}
-        onPlayUzbekAudio={playUzbekAudio}
-      />
+      <TranslationContainer liveTranslation={liveTranslation} />
     </div>
   );
 };

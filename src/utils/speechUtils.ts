@@ -5,10 +5,16 @@ export interface SpeechRecognitionResult {
   confidence: number;
 }
 
+export interface LiveSpeechCallbacks {
+  onInterimResult: (transcript: string) => void;
+  onFinalResult: (transcript: string, confidence: number) => void;
+  onError: (error: Error) => void;
+  onEnd: () => void;
+}
+
 export class VoiceSpeechRecognition {
   private recognition: SpeechRecognition | null = null;
   private isSupported: boolean;
-
   constructor() {
     this.isSupported =
       "webkitSpeechRecognition" in window || "SpeechRecognition" in window;
@@ -17,8 +23,8 @@ export class VoiceSpeechRecognition {
       const SpeechRecognition =
         window.SpeechRecognition || window.webkitSpeechRecognition;
       this.recognition = new SpeechRecognition();
-      this.recognition.continuous = false;
-      this.recognition.interimResults = false;
+      this.recognition.continuous = true;
+      this.recognition.interimResults = true;
       this.recognition.lang = "en-US";
     }
   }
@@ -56,6 +62,38 @@ export class VoiceSpeechRecognition {
         reject(error);
       }
     });
+  }
+
+  startLiveListening(callbacks: LiveSpeechCallbacks): void {
+    if (!this.recognition) {
+      callbacks.onError(new Error("Speech recognition not supported"));
+      return;
+    }
+
+    this.recognition.onresult = (event: SpeechRecognitionEvent) => {
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const result = event.results[i];
+        if (result.isFinal) {
+          callbacks.onFinalResult(result[0].transcript, result[0].confidence);
+        } else {
+          callbacks.onInterimResult(result[0].transcript);
+        }
+      }
+    };
+
+    this.recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+      callbacks.onError(new Error(`Speech recognition error: ${event.error}`));
+    };
+
+    this.recognition.onend = () => {
+      callbacks.onEnd();
+    };
+
+    try {
+      this.recognition.start();
+    } catch (error) {
+      callbacks.onError(error as Error);
+    }
   }
 
   stopListening(): void {
