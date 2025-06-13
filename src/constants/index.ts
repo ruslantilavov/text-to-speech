@@ -1,7 +1,7 @@
 export const API_CONFIG = {
   GEMINI_API_KEY:
     import.meta.env.VITE_GEMINI_API_KEY ||
-    "AIzaSyBARWqos_9fcjxRX5KTj2HEnBlrs50UWs4",
+    "AIzaSyDuDFzuEUrfkJbMUzD_pYQ-iraMDaRlGLI",
   TTS_API_URL: "https://oyqiz.airi.uz/api/v1/tts",
 } as const;
 
