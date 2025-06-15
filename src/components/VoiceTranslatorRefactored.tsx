@@ -1,28 +1,22 @@
 import React, { useEffect } from "react";
-import { initializeGeminiRealTime } from "../utils/geminiLiveApi";
-import { useSpeechRecognition } from "../hooks/useSpeechRecognition";
+import { ERROR_MESSAGES, UI_CONFIG } from "../constants";
 import { useLiveTranslation } from "../hooks/useLiveTranslation";
-import { UI_CONFIG, ERROR_MESSAGES } from "../constants";
+import { useSpeechRecognition } from "../hooks/useSpeechRecognition";
+import { initializeGeminiRealTime } from "../utils/geminiLiveApi";
 
-// UI Components
-import { Header } from "./ui/Header";
-import { Controls } from "./ui/Controls";
-import { LiveIndicator } from "./ui/LiveIndicator";
-import { ErrorMessage } from "./ui/ErrorMessage";
-import { TranslationContainer } from "./ui/TranslationContainer";
 import { BrowserSupport } from "./ui/BrowserSupport";
+import { Controls } from "./ui/Controls";
+import { ErrorMessage } from "./ui/ErrorMessage";
+import { Header } from "./ui/Header";
+import { LiveIndicator } from "./ui/LiveIndicator";
 
-import "./VoiceTranslator.css";
 import { useAudioPlayback } from "../hooks";
+import "./VoiceTranslator.css";
 
 const VoiceTranslator: React.FC = () => {
   const { playUzbekAudio, stopAudio } = useAudioPlayback();
-  const {
-    liveTranslation,
-    handleInterimResult,
-    handleFinalResult,
-    resetTranslation,
-  } = useLiveTranslation();
+  const { handleInterimResult, handleFinalResult, resetTranslation } =
+    useLiveTranslation();
 
   const {
     isListening,
@@ -32,12 +26,8 @@ const VoiceTranslator: React.FC = () => {
     stopListening,
   } = useSpeechRecognition({
     onInterimResult: handleInterimResult,
-    onFinalResult: async (transcript: string, confidence: number) => {
-      console.log(`Final result: "${transcript}" (confidence: ${confidence})`);
-
+    onFinalResult: async (transcript: string) => {
       const translation = await handleFinalResult(transcript);
-
-      // Auto-play the translated audio
       if (translation) {
         await playUzbekAudio(translation);
       }
@@ -50,7 +40,6 @@ const VoiceTranslator: React.FC = () => {
     },
   });
 
-  // Initialize Gemini API on component mount
   useEffect(() => {
     try {
       initializeGeminiRealTime();
@@ -74,7 +63,6 @@ const VoiceTranslator: React.FC = () => {
     stopAudio();
   };
 
-  // Show browser support message if speech recognition is not supported
   if (!isSupported) {
     return <BrowserSupport />;
   }
@@ -95,8 +83,6 @@ const VoiceTranslator: React.FC = () => {
       <ErrorMessage error={speechError} />
 
       <LiveIndicator isVisible={isListening} />
-
-      <TranslationContainer liveTranslation={liveTranslation} />
     </div>
   );
 };

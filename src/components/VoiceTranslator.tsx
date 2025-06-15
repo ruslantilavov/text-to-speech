@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { ERROR_MESSAGES, UI_CONFIG } from "../constants";
+import React, { useEffect, useState } from "react";
+import { ERROR_MESSAGES, SUPPORTED_LANGUAGES } from "../constants";
 import { useLiveTranslation } from "../hooks/useLiveTranslation";
 import { useSpeechRecognition } from "../hooks/useSpeechRecognition";
 import { initializeGeminiRealTime } from "../utils/geminiLiveApi";
@@ -7,36 +7,52 @@ import { initializeGeminiRealTime } from "../utils/geminiLiveApi";
 // UI Components
 import { BrowserSupport } from "./ui/BrowserSupport";
 import { Controls } from "./ui/Controls";
+import DynamicLanguageSelector from "./ui/DynamicLanguageSelector";
 import { ErrorMessage } from "./ui/ErrorMessage";
-import { Header } from "./ui/Header";
 import { LiveIndicator } from "./ui/LiveIndicator";
 import { RealTimeTranscript } from "./ui/RealTimeTranscript";
 
+import "../components/ui/DynamicLanguageSelector.css";
 import { useAudioPlayback } from "../hooks";
 import "./VoiceTranslator.css";
 
+interface Language {
+  code: string;
+  name: string;
+  flag: string;
+  speechCode: string;
+}
+
 const VoiceTranslator: React.FC = () => {
-  const { playUzbekAudio, stopAudio } = useAudioPlayback();
+  const [inputLanguage, setInputLanguage] = useState<Language>(
+    SUPPORTED_LANGUAGES.SPEECH_INPUT[0],
+  );
+  const [outputLanguage] = useState<Language>(
+    SUPPORTED_LANGUAGES.TTS_OUTPUT.find((lang) => lang.code === "uz") ||
+      SUPPORTED_LANGUAGES.TTS_OUTPUT[0],
+  );
+
+  const { playAudio, stopAudio } = useAudioPlayback();
   const {
     liveTranslation,
     handleInterimResult,
     handleFinalResult,
     resetTranslation,
+    setTargetLanguage,
+    setSourceLanguage,
   } = useLiveTranslation();
-
   const {
     isListening,
     isSupported,
     error: speechError,
     startListening,
     stopListening,
+    setLanguage,
   } = useSpeechRecognition({
     onInterimResult: handleInterimResult,
     onFinalResult: async (transcript: string, confidence: number) => {
       console.log(`Final result: "${transcript}" (confidence: ${confidence})`);
-
       await handleFinalResult(transcript);
-      // Audio will only play when user clicks the play button
     },
     onError: (error: Error) => {
       console.error("Speech recognition error:", error);
@@ -45,7 +61,6 @@ const VoiceTranslator: React.FC = () => {
       console.log("Speech recognition ended");
     },
   });
-
   // Initialize Gemini API on component mount
   useEffect(() => {
     try {
@@ -54,11 +69,13 @@ const VoiceTranslator: React.FC = () => {
       console.warn(ERROR_MESSAGES.GEMINI_INIT_FAILED, error);
     }
 
-    // Cleanup on unmount
     return () => {
       stopAudio();
     };
   }, [stopAudio]);
+  useEffect(() => {
+    setTargetLanguage("uz");
+  }, [setTargetLanguage]);
 
   const handleStartListening = () => {
     resetTranslation();
@@ -69,24 +86,34 @@ const VoiceTranslator: React.FC = () => {
     stopListening();
     stopAudio();
   };
+  const handleInputLanguageChange = (language: Language) => {
+    setInputLanguage(language);
+    setLanguage(language.speechCode);
+    setSourceLanguage(language.code);
+  };
+  const handlePlayAudio = (text: string, languageCode: string) => {
+    playAudio(text, languageCode);
+  };
 
-  // Show browser support message if speech recognition is not supported
   if (!isSupported) {
     return <BrowserSupport />;
   }
 
   return (
     <div className="voice-translator live-mode">
-      <Header
-        title={UI_CONFIG.HEADER.TITLE}
-        subtitle={UI_CONFIG.HEADER.SUBTITLE}
-      />
+      <div className="language-selectors">
+        <DynamicLanguageSelector
+          selectedLanguage={inputLanguage}
+          onLanguageChange={handleInputLanguageChange}
+          type="input"
+        />
+      </div>
       <Controls
         isListening={isListening}
         onStartListening={handleStartListening}
         onStopListening={handleStopListening}
       />
-      <ErrorMessage error={speechError} />{" "}
+      <ErrorMessage error={speechError} />
       <LiveIndicator
         isVisible={isListening}
         hasTranscript={
@@ -95,12 +122,10 @@ const VoiceTranslator: React.FC = () => {
       />
       <RealTimeTranscript
         liveTranslation={liveTranslation}
-        onPlayUzbekAudio={playUzbekAudio}
+        inputLanguage={inputLanguage}
+        outputLanguage={outputLanguage}
+        onPlayAudio={handlePlayAudio}
       />
-      {/* <TranslationContainer
-        liveTranslation={liveTranslation}
-        onPlayUzbekAudio={playUzbekAudio}
-      /> */}
     </div>
   );
 };

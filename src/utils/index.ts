@@ -1,9 +1,9 @@
-export function extractTranslatedText(responseString: string): string | null {
+export function extractTranslatedText(responseString: string): string {
+  if (!responseString) return "";
   const regex = /"translatedText":\s*"([^"]*)"/;
-
   const match = responseString.match(regex);
-
-  return match ? match[1] : responseString;
+  if (match) {
+    return match[1];
+  }
+  return responseString;
 }
-
-export { fastUzbekTranslator } from "./fastTranslator";

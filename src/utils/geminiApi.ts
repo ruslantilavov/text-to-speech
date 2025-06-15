@@ -300,20 +300,30 @@ Provide corrections with explanations for language learners.`;
       );
     }
   }
-
   private getLanguageName(code: string): string {
     const languages: Record<string, string> = {
       en: "English",
-      uz: "Uzbek",
-      ru: "Russian",
-      es: "Spanish",
-      fr: "French",
       de: "German",
-      zh: "Chinese",
-      ja: "Japanese",
+      ru: "Russian",
       ko: "Korean",
+      ja: "Japanese",
+      zh: "Chinese",
+      fr: "French",
+      es: "Spanish",
+      it: "Italian",
+      pt: "Portuguese",
+      nl: "Dutch",
+      sv: "Swedish",
+      no: "Norwegian",
+      da: "Danish",
+      fi: "Finnish",
+      pl: "Polish",
+      tr: "Turkish",
       ar: "Arabic",
       hi: "Hindi",
+      th: "Thai",
+      vi: "Vietnamese",
+      uz: "Uzbek",
     };
 
     return languages[code] || code;

@@ -1,11 +1,12 @@
 import { useCallback, useRef, useState } from "react";
 import { useTranslation } from "./useTranslation";
+import { SPEECH_CONFIG } from "../constants";
 
 export interface LiveTranslation {
   englishInterim: string;
   englishFinal: string;
-  uzbekInterim: string;
-  uzbekFinal: string;
+  translatedInterim: string;
+  translatedFinal: string;
   isTranslating: boolean;
   wordCount: number;
 }
@@ -15,19 +16,26 @@ export interface UseLiveTranslationReturn {
   handleInterimResult: (transcript: string) => void;
   handleFinalResult: (transcript: string) => Promise<string>;
   resetTranslation: () => void;
+  setTargetLanguage: (languageCode: string) => void;
+  setSourceLanguage: (languageCode: string) => void;
 }
 
 export const useLiveTranslation = (): UseLiveTranslationReturn => {
+  const [, setTargetLanguageState] = useState<string>("en");
   const [liveTranslation, setLiveTranslation] = useState<LiveTranslation>({
     englishInterim: "",
     englishFinal: "",
-    uzbekInterim: "",
-    uzbekFinal: "",
+    translatedInterim: "",
+    translatedFinal: "",
     isTranslating: false,
     wordCount: 0,
   });
-
-  const { translateText, cancelPendingTranslation } = useTranslation();
+  const {
+    translateText,
+    cancelPendingTranslation,
+    setTargetLanguage: setTranslationTargetLanguage,
+    setSourceLanguage: setTranslationSourceLanguage,
+  } = useTranslation();
   const translationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
     null,
   );
@@ -47,18 +55,15 @@ export const useLiveTranslation = (): UseLiveTranslationReturn => {
       // Cancel any pending translation
       if (translationTimeoutRef.current) {
         clearTimeout(translationTimeoutRef.current);
-      } // Immediate translation for interim results (no debounce for faster response)
-      if (translationTimeoutRef.current) {
-        clearTimeout(translationTimeoutRef.current);
       }
 
-      // Translate immediately
+      // Debounce translation for interim results
       translationTimeoutRef.current = setTimeout(async () => {
         try {
-          const translation = await translateText(transcript);
+          const translation = await translateText(transcript, false);
           setLiveTranslation((prev) => ({
             ...prev,
-            uzbekInterim: translation,
+            translatedInterim: translation,
             isTranslating: false,
           }));
         } catch (error) {
@@ -68,7 +73,7 @@ export const useLiveTranslation = (): UseLiveTranslationReturn => {
             isTranslating: false,
           }));
         }
-      }, 50); // Very small delay for batching rapid speech changes
+      }, SPEECH_CONFIG.DEBOUNCE_DELAY);
     },
     [translateText],
   );
@@ -92,15 +97,18 @@ export const useLiveTranslation = (): UseLiveTranslationReturn => {
       // Clear translation timeout
       if (translationTimeoutRef.current) {
         clearTimeout(translationTimeoutRef.current);
-      } // Translate final result
-      try {
-        const translation = await translateText(transcript);
+      }
 
+      // Translate final result
+      try {
+        const translation = await translateText(transcript, true);
         setLiveTranslation((prev) => ({
           ...prev,
-          uzbekFinal:
-            prev.uzbekFinal + (prev.uzbekFinal ? " " : "") + translation,
-          uzbekInterim: "", // Clear interim when we have final result
+          translatedFinal:
+            prev.translatedFinal +
+            (prev.translatedFinal ? " " : "") +
+            translation,
+          translatedInterim: "", // Clear interim when we have final result
           isTranslating: false,
         }));
 
@@ -121,8 +129,8 @@ export const useLiveTranslation = (): UseLiveTranslationReturn => {
     setLiveTranslation({
       englishInterim: "",
       englishFinal: "",
-      uzbekInterim: "",
-      uzbekFinal: "",
+      translatedInterim: "",
+      translatedFinal: "",
       isTranslating: false,
       wordCount: 0,
     });
@@ -133,11 +141,27 @@ export const useLiveTranslation = (): UseLiveTranslationReturn => {
 
     cancelPendingTranslation();
   }, [cancelPendingTranslation]);
+  const setTargetLanguage = useCallback(
+    (languageCode: string) => {
+      setTargetLanguageState(languageCode);
+      setTranslationTargetLanguage(languageCode);
+    },
+    [setTranslationTargetLanguage],
+  );
+
+  const setSourceLanguage = useCallback(
+    (languageCode: string) => {
+      setTranslationSourceLanguage(languageCode);
+    },
+    [setTranslationSourceLanguage],
+  );
 
   return {
     liveTranslation,
     handleInterimResult,
     handleFinalResult,
     resetTranslation,
+    setTargetLanguage,
+    setSourceLanguage,
   };
 };

@@ -1,13 +1,20 @@
 import React from "react";
 import { extractTranslatedText } from "../../utils";
 
+interface Language {
+  code: string;
+  name: string;
+  flag: string;
+  speechCode: string;
+}
+
 interface LanguageSectionProps {
-  language: "english" | "uzbek";
+  language: Language;
   title: string;
   finalText: string;
   interimText: string;
-  icon: string;
-  onPlayAudio?: (text: string) => void;
+  isInputSection?: boolean;
+  onPlayAudio?: (text: string, languageCode: string) => void;
 }
 
 export const LanguageSection: React.FC<LanguageSectionProps> = ({
@@ -15,45 +22,47 @@ export const LanguageSection: React.FC<LanguageSectionProps> = ({
   title,
   finalText,
   interimText,
-  icon,
+  isInputSection = false,
   onPlayAudio,
 }) => {
   const handlePlayAudio = () => {
     if (onPlayAudio && finalText) {
-      const translatedText = extractTranslatedText(finalText);
-      if (translatedText) {
-        onPlayAudio(translatedText);
-      }
+      // Extract text if it's not an input section
+      const textToPlay = isInputSection
+        ? finalText
+        : extractTranslatedText(finalText);
+      onPlayAudio(textToPlay, language.code);
     }
   };
+
   return (
-    <div className={`language-section ${language}-section`}>
+    <div
+      className={`language-section ${
+        isInputSection ? "input" : "output"
+      }-section`}
+    >
       <h3>
         <span>
-          {icon} {title}
+          {language.flag} {title}
         </span>
-        {language === "uzbek" && finalText && (
+        {!isInputSection && finalText && (
           <button
             className="play-audio-button"
             onClick={handlePlayAudio}
-            title="Play Uzbek audio"
-            aria-label="Play Uzbek audio"
+            title={`Play ${language.name} audio`}
+            aria-label={`Play ${language.name} audio`}
           >
             🔊
           </button>
         )}
-      </h3>
+      </h3>{" "}
       <div className="live-text">
         <p className="final-text">
-          {language === "english"
-            ? finalText
-            : extractTranslatedText(finalText)}
+          {isInputSection ? finalText : extractTranslatedText(finalText)}
         </p>
         {interimText && (
           <p className="interim-text">
-            {language === "english"
-              ? interimText
-              : extractTranslatedText(interimText)}
+            {isInputSection ? interimText : extractTranslatedText(interimText)}
           </p>
         )}
       </div>

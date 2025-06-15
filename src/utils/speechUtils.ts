@@ -101,6 +101,12 @@ export class VoiceSpeechRecognition {
       this.recognition.stop();
     }
   }
+
+  setLanguage(languageCode: string): void {
+    if (this.recognition) {
+      this.recognition.lang = languageCode;
+    }
+  }
 }
 
 export class TextToSpeech {

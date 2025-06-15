@@ -18,6 +18,7 @@ export interface UseSpeechRecognitionReturn {
   error: string | null;
   startListening: () => void;
   stopListening: () => void;
+  setLanguage: (languageCode: string) => void;
 }
 
 export const useSpeechRecognition = ({
@@ -89,11 +90,21 @@ export const useSpeechRecognition = ({
     setIsListening(false);
   }, []);
 
+  const setLanguage = useCallback(
+    (languageCode: string) => {
+      if (speechRecognition.current) {
+        speechRecognition.current.setLanguage(languageCode);
+      }
+    },
+    [speechRecognition],
+  );
+
   return {
     isListening,
     isSupported,
     error,
     startListening,
     stopListening,
+    setLanguage,
   };
 };

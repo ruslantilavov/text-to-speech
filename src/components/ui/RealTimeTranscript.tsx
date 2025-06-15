@@ -1,25 +1,27 @@
 import React from "react";
 import type { LiveTranslation } from "../../hooks/useLiveTranslation";
-import { extractTranslatedText } from "../../utils";
+import { LanguageSection } from "./LanguageSection";
+
+interface Language {
+  code: string;
+  name: string;
+  flag: string;
+  speechCode: string;
+}
 
 interface RealTimeTranscriptProps {
   liveTranslation: LiveTranslation;
-  onPlayUzbekAudio?: (text: string) => void;
+  inputLanguage: Language;
+  outputLanguage: Language;
+  onPlayAudio?: (text: string, languageCode: string) => void;
 }
 
 export const RealTimeTranscript: React.FC<RealTimeTranscriptProps> = ({
   liveTranslation,
-  onPlayUzbekAudio,
+  inputLanguage,
+  outputLanguage,
+  onPlayAudio,
 }) => {
-  const handlePlayAudio = () => {
-    if (onPlayUzbekAudio && liveTranslation.uzbekFinal) {
-      const extractedText = liveTranslation.uzbekFinal;
-      if (extractedText) {
-        onPlayUzbekAudio(extractedText);
-      }
-    }
-  };
-
   return (
     <div className="real-time-transcript">
       <div className="transcript-header">
@@ -36,52 +38,29 @@ export const RealTimeTranscript: React.FC<RealTimeTranscriptProps> = ({
             )}
           </div>
         </div>
-        {liveTranslation.uzbekFinal && (
-          <button
-            className="play-all-audio-button"
-            onClick={handlePlayAudio}
-            title="Play full Uzbek translation"
-            aria-label="Play full Uzbek translation"
-          >
-            🔊 Play All
-          </button>
-        )}
       </div>
 
       <div className="transcript-content">
-        <div className="language-transcript english-transcript">
-          <div className="transcript-label">🇺🇸 English</div>
-          <div className="transcript-text">
-            <div className="final-transcript">
-              {liveTranslation.englishFinal}
-            </div>
-            {liveTranslation.englishInterim && (
-              <div className="interim-transcript">
-                {liveTranslation.englishInterim}
-              </div>
-            )}
-          </div>
-        </div>
-
+        <LanguageSection
+          language={inputLanguage}
+          title={`${inputLanguage.name} (Input)`}
+          finalText={liveTranslation.englishFinal}
+          interimText={liveTranslation.englishInterim}
+          isInputSection={true}
+        />
         <div className="transcript-divider">
           <div className="divider-line"></div>
           <div className="divider-icon">⟷</div>
           <div className="divider-line"></div>
-        </div>
-
-        <div className="language-transcript uzbek-transcript">
-          <div className="transcript-label">🇺🇿 Uzbek</div>
-          <div className="transcript-text">
-            <div className="final-transcript">
-              {extractTranslatedText(liveTranslation.uzbekFinal)}
-            </div>
-            {liveTranslation.uzbekInterim && (
-              <div className="interim-transcript">
-                {extractTranslatedText(liveTranslation.uzbekInterim)}
-              </div>
-            )}
-          </div>
-        </div>
+        </div>{" "}
+        <LanguageSection
+          language={outputLanguage}
+          title={`${outputLanguage.name}`}
+          finalText={liveTranslation.translatedFinal}
+          interimText={liveTranslation.translatedInterim}
+          isInputSection={false}
+          onPlayAudio={onPlayAudio}
+        />
       </div>
     </div>
   );

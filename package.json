@@ -10,8 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ant-design/icons": "^6.0.0",
     "@google/generative-ai": "^0.24.1",
     "@types/dom-speech-recognition": "^0.0.6",
+    "antd": "^5.26.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },

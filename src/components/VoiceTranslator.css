@@ -161,6 +161,7 @@ body {
 .controls {
   margin-bottom: var(--spacing-xl);
   animation: slideInUp var(--duration-slow) var(--ease-out) 0.2s both;
+  margin-top: 50px;
 }
 
 .live-button {
@@ -580,6 +581,97 @@ body {
   color: rgba(255, 255, 255, 0.6);
   font-size: 1.2rem;
   font-weight: 300;
+}
+
+/* Language Selector Styles */
+.language-selectors {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+ width: 120px;
+}
+
+
+
+
+
+
+
+.output-language-fixed {
+  margin-bottom: 20px;
+}
+
+.output-language-fixed .language-selector-header {
+  margin-bottom: 10px;
+}
+
+.output-language-fixed .language-selector-header h3 {
+  margin: 0 0 5px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.output-language-fixed .language-selector-description {
+  margin: 0;
+  font-size: 14px;
+  color: #7f8c8d;
+}
+
+.fixed-language-display {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  border: 2px solid #e1e8ed;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.fixed-language-display .language-flag {
+  font-size: 20px;
+}
+
+.fixed-language-display .language-name {
+  font-weight: 500;
+  color: #2c3e50;
+  flex: 1;
+}
+
+.fixed-language-display .fixed-indicator {
+  font-size: 12px;
+  color: #7f8c8d;
+  background: #f8f9fa;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+/* Dark mode support for fixed language display */
+@media (prefers-color-scheme: dark) {
+  .output-language-fixed .language-selector-header h3 {
+    color: #ecf0f1;
+  }
+  
+  .output-language-fixed .language-selector-description {
+    color: #bdc3c7;
+  }
+  
+  .fixed-language-display {
+    background: rgba(52, 73, 94, 0.9);
+    border-color: #4a5568;
+  }
+  
+  .fixed-language-display .language-name {
+    color: #ecf0f1;
+  }
+  
+  .fixed-language-display .fixed-indicator {
+    background: #4a5568;
+    color: #bdc3c7;
+  }
 }
 
 /* Animations */
