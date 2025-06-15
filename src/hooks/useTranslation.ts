@@ -1,8 +1,8 @@
 import { useCallback, useRef } from "react";
-import { getGeminiRealTime } from "../utils/geminiLiveApi";
+import { fastUzbekTranslator } from "../utils/fastTranslator";
 
 export interface UseTranslationReturn {
-  translateText: (text: string, isFinal?: boolean) => Promise<string>;
+  translateText: (text: string) => Promise<string>;
   cancelPendingTranslation: () => void;
 }
 
@@ -10,41 +10,19 @@ export const useTranslation = (): UseTranslationReturn => {
   const translationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
     null,
   );
+  const translateText = useCallback(async (text: string): Promise<string> => {
+    if (!text.trim()) {
+      return "";
+    }
 
-  const translateText = useCallback(
-    async (text: string, isFinal: boolean = false): Promise<string> => {
-      const geminiRealTime = getGeminiRealTime();
-      if (!geminiRealTime) {
-        return text;
-      }
-
-      try {
-        if (isFinal) {
-          // For final results, get the complete translation
-          const translationPrompt = `Translate the following English text to Uzbek. Provide only the translation:
-
-"${text}"`;
-
-          const result = await geminiRealTime.model.generateContent(
-            translationPrompt,
-          );
-          const response = await result.response;
-          return response.text().trim();
-        } else {
-          // For interim results, use streaming translation
-          let translatedText = "";
-          await geminiRealTime.streamingTranslation(text, (chunk: string) => {
-            translatedText = chunk;
-          });
-          return translatedText;
-        }
-      } catch (error) {
-        console.error("Translation error:", error);
-        return text;
-      }
-    },
-    [],
-  );
+    try {
+      const translation = await fastUzbekTranslator.translate(text);
+      return translation;
+    } catch (error) {
+      console.error("Translation error:", error);
+      return text;
+    }
+  }, []);
 
   const cancelPendingTranslation = useCallback(() => {
     if (translationTimeoutRef.current) {

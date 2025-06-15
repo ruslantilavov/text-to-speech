@@ -3,5 +3,7 @@ export function extractTranslatedText(responseString: string): string | null {
 
   const match = responseString.match(regex);
 
-  return match ? match[1] : null;
+  return match ? match[1] : responseString;
 }
+
+export { fastUzbekTranslator } from "./fastTranslator";

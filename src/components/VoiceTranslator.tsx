@@ -1,19 +1,19 @@
 import React, { useEffect } from "react";
-import { initializeGeminiRealTime } from "../utils/geminiLiveApi";
-import { useSpeechRecognition } from "../hooks/useSpeechRecognition";
+import { ERROR_MESSAGES, UI_CONFIG } from "../constants";
 import { useLiveTranslation } from "../hooks/useLiveTranslation";
-import { UI_CONFIG, ERROR_MESSAGES } from "../constants";
+import { useSpeechRecognition } from "../hooks/useSpeechRecognition";
+import { initializeGeminiRealTime } from "../utils/geminiLiveApi";
 
 // UI Components
-import { Header } from "./ui/Header";
-import { Controls } from "./ui/Controls";
-import { LiveIndicator } from "./ui/LiveIndicator";
-import { ErrorMessage } from "./ui/ErrorMessage";
-import { TranslationContainer } from "./ui/TranslationContainer";
 import { BrowserSupport } from "./ui/BrowserSupport";
+import { Controls } from "./ui/Controls";
+import { ErrorMessage } from "./ui/ErrorMessage";
+import { Header } from "./ui/Header";
+import { LiveIndicator } from "./ui/LiveIndicator";
+import { RealTimeTranscript } from "./ui/RealTimeTranscript";
 
-import "./VoiceTranslator.css";
 import { useAudioPlayback } from "../hooks";
+import "./VoiceTranslator.css";
 
 const VoiceTranslator: React.FC = () => {
   const { playUzbekAudio, stopAudio } = useAudioPlayback();
@@ -81,21 +81,26 @@ const VoiceTranslator: React.FC = () => {
         title={UI_CONFIG.HEADER.TITLE}
         subtitle={UI_CONFIG.HEADER.SUBTITLE}
       />
-
       <Controls
         isListening={isListening}
         onStartListening={handleStartListening}
         onStopListening={handleStopListening}
       />
-
-      <ErrorMessage error={speechError} />
-
-      <LiveIndicator isVisible={isListening} />
-
-      <TranslationContainer
+      <ErrorMessage error={speechError} />{" "}
+      <LiveIndicator
+        isVisible={isListening}
+        hasTranscript={
+          !!(liveTranslation.englishFinal || liveTranslation.englishInterim)
+        }
+      />
+      <RealTimeTranscript
         liveTranslation={liveTranslation}
         onPlayUzbekAudio={playUzbekAudio}
       />
+      {/* <TranslationContainer
+        liveTranslation={liveTranslation}
+        onPlayUzbekAudio={playUzbekAudio}
+      /> */}
     </div>
   );
 };

@@ -14,12 +14,16 @@ export const LanguageSection: React.FC<LanguageSectionProps> = ({
   language,
   title,
   finalText,
+  interimText,
   icon,
   onPlayAudio,
 }) => {
   const handlePlayAudio = () => {
     if (onPlayAudio && finalText) {
-      onPlayAudio(finalText);
+      const translatedText = extractTranslatedText(finalText);
+      if (translatedText) {
+        onPlayAudio(translatedText);
+      }
     }
   };
   return (
@@ -45,6 +49,13 @@ export const LanguageSection: React.FC<LanguageSectionProps> = ({
             ? finalText
             : extractTranslatedText(finalText)}
         </p>
+        {interimText && (
+          <p className="interim-text">
+            {language === "english"
+              ? interimText
+              : extractTranslatedText(interimText)}
+          </p>
+        )}
       </div>
     </div>
   );

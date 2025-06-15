@@ -5,6 +5,7 @@ export { LiveIndicator } from "./ui/LiveIndicator";
 export { ErrorMessage } from "./ui/ErrorMessage";
 export { LanguageSection } from "./ui/LanguageSection";
 export { TranslationContainer } from "./ui/TranslationContainer";
+export { RealTimeTranscript } from "./ui/RealTimeTranscript";
 export { BrowserSupport } from "./ui/BrowserSupport";
 
 // Main Component
