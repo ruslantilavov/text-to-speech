@@ -10,7 +10,6 @@ export interface UseAudioPlaybackReturn {
 
 export const useAudioPlayback = (): UseAudioPlaybackReturn => {
   const currentAudio = useRef<HTMLAudioElement | null>(null);
-
   const playAudio = useCallback(
     async (text: string, languageCode: string): Promise<void> => {
       const readText = extractTranslatedText(text);
@@ -23,61 +22,64 @@ export const useAudioPlayback = (): UseAudioPlaybackReturn => {
           currentAudio.current = null;
         }
 
-        // For now, only Uzbek TTS is supported via the API
+        // First try using the TTS API for Uzbek
         if (languageCode === "uz") {
-          const response = await fetch(API_CONFIG.TTS_API_URL, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              text: readText,
-            }),
-          });
+          try {
+            const response = await fetch(API_CONFIG.TTS_API_URL, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                text: readText,
+              }),
+            });
 
-          if (!response.ok) {
-            throw new Error(
-              `${ERROR_MESSAGES.TTS_API_ERROR}: ${response.status}`,
-            );
-          }
+            if (response.ok) {
+              const audioBlob = await response.blob();
+              const audioUrl = URL.createObjectURL(audioBlob);
+              const audio = new Audio(audioUrl);
+              currentAudio.current = audio;
 
-          const audioBlob = await response.blob();
-          const audioUrl = URL.createObjectURL(audioBlob);
-          const audio = new Audio(audioUrl);
-          currentAudio.current = audio;
+              await audio.play();
 
-          await audio.play();
+              audio.addEventListener("ended", () => {
+                URL.revokeObjectURL(audioUrl);
+                currentAudio.current = null;
+              });
 
-          audio.addEventListener("ended", () => {
-            URL.revokeObjectURL(audioUrl);
-            currentAudio.current = null;
-          });
+              audio.addEventListener("error", () => {
+                URL.revokeObjectURL(audioUrl);
+                currentAudio.current = null;
+              });
 
-          audio.addEventListener("error", () => {
-            URL.revokeObjectURL(audioUrl);
-            currentAudio.current = null;
-          });
-        } else {
-          // For other languages, use browser's speech synthesis as fallback
-          if (readText) {
-            const synth = window.speechSynthesis;
-            const utterance = new SpeechSynthesisUtterance(readText);
-
-            // Try to find a voice for the target language
-            const voices = synth.getVoices();
-            const targetVoice = voices.find(
-              (voice) =>
-                voice.lang.startsWith(languageCode) ||
-                voice.lang.startsWith(languageCode.split("-")[0]),
-            );
-
-            if (targetVoice) {
-              utterance.voice = targetVoice;
+              return; // If API call was successful, return early
             }
-
-            utterance.lang = languageCode;
-            synth.speak(utterance);
+          } catch (apiError) {
+            console.error("TTS API error:", apiError);
+            // Fall through to browser's speech synthesis
           }
+        }
+
+        // For all languages or if API fails, use browser's speech synthesis as fallback
+        if (readText) {
+          const synth = window.speechSynthesis;
+          const utterance = new SpeechSynthesisUtterance(readText);
+
+          // Try to find a voice for the target language
+          const voices = synth.getVoices();
+          const targetVoice = voices.find(
+            (voice) =>
+              voice.lang.startsWith(languageCode) ||
+              voice.lang.startsWith(languageCode.split("-")[0]),
+          );
+
+          if (targetVoice) {
+            utterance.voice = targetVoice;
+          }
+
+          utterance.lang = languageCode;
+          synth.speak(utterance);
         }
       } catch (error) {
         console.error(ERROR_MESSAGES.AUDIO_PLAYBACK_FAILED, error);

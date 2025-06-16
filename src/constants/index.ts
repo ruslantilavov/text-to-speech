@@ -1,12 +1,12 @@
 export const API_CONFIG = {
   GEMINI_API_KEY:
     import.meta.env.VITE_GEMINI_API_KEY ||
-    "AIzaSyArMzc2xE1e9zpfowPpmbzQvZ-rEAPz3zo",
+    "AIzaSyBiQiiRr-TY2Mjkv5iuu7jtDQDN2YOPjZ4",
   TTS_API_URL: "https://oyqiz.airi.uz/api/v1/tts",
 } as const;
 
 export const SPEECH_CONFIG = {
-  LANGUAGE: "uz-UZ", // Changed to Uzbek as the only input language
+  LANGUAGE: "uz-UZ", // Changed to Uzbek as the only.+input language
   CONTINUOUS: true,
   INTERIM_RESULTS: true,
   DEBOUNCE_DELAY: 0,

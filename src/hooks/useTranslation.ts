@@ -16,7 +16,7 @@ export interface UseTranslationReturn {
 }
 
 export const useTranslation = (): UseTranslationReturn => {
-  const [targetLanguage, setTargetLanguageState] = useState<string>("uz"); // Fixed to Uzbek
+  const [targetLanguage, setTargetLanguageState] = useState<string>("uz"); // Default to Uzbek
   const [sourceLanguage, setSourceLanguageState] = useState<string>("en"); // Default to English
   const translationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
     null,
@@ -68,9 +68,7 @@ export const useTranslation = (): UseTranslationReturn => {
 
       try {
         if (isFinal) {
-          // For final results, get the complete translation
           const translationPrompt = `Translate the following ${sourceLanguageName} text to ${targetLanguageName}. Provide only the translation:
-
 "${text}"`;
 
           const result = await geminiRealTime.model.generateContent(

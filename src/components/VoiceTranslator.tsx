@@ -27,10 +27,6 @@ const VoiceTranslator: React.FC = () => {
   const [inputLanguage, setInputLanguage] = useState<Language>(
     SUPPORTED_LANGUAGES.SPEECH_INPUT[0],
   );
-  const [outputLanguage] = useState<Language>(
-    SUPPORTED_LANGUAGES.TTS_OUTPUT.find((lang) => lang.code === "uz") ||
-      SUPPORTED_LANGUAGES.TTS_OUTPUT[0],
-  );
 
   const { playAudio, stopAudio } = useAudioPlayback();
   const {
@@ -38,7 +34,6 @@ const VoiceTranslator: React.FC = () => {
     handleInterimResult,
     handleFinalResult,
     resetTranslation,
-    setTargetLanguage,
     setSourceLanguage,
   } = useLiveTranslation();
   const {
@@ -73,9 +68,6 @@ const VoiceTranslator: React.FC = () => {
       stopAudio();
     };
   }, [stopAudio]);
-  useEffect(() => {
-    setTargetLanguage("uz");
-  }, [setTargetLanguage]);
 
   const handleStartListening = () => {
     resetTranslation();
@@ -91,6 +83,7 @@ const VoiceTranslator: React.FC = () => {
     setLanguage(language.speechCode);
     setSourceLanguage(language.code);
   };
+
   const handlePlayAudio = (text: string, languageCode: string) => {
     playAudio(text, languageCode);
   };
@@ -101,6 +94,7 @@ const VoiceTranslator: React.FC = () => {
 
   return (
     <div className="voice-translator live-mode">
+      {" "}
       <div className="language-selectors">
         <DynamicLanguageSelector
           selectedLanguage={inputLanguage}
@@ -123,7 +117,6 @@ const VoiceTranslator: React.FC = () => {
       <RealTimeTranscript
         liveTranslation={liveTranslation}
         inputLanguage={inputLanguage}
-        outputLanguage={outputLanguage}
         onPlayAudio={handlePlayAudio}
       />
     </div>

@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI, GenerativeModel } from "@google/generative-ai";
+import { GenerativeModel, GoogleGenerativeAI } from "@google/generative-ai";
 
 const API_KEY =
   import.meta.env.VITE_GEMINI_API_KEY ||
@@ -48,13 +48,15 @@ export class GeminiApiService {
   private async initializeModels(): Promise<void> {
     try {
       this.models.set(
-        "gemini-2.0-flash",
-        this.genAI.getGenerativeModel({ model: "gemini-2.0-flash" }),
+        "gemini-2.5-flash-preview-05-20",
+        this.genAI.getGenerativeModel({
+          model: "gemini-2.5-flash-preview-05-20",
+        }),
       );
 
       this.availableModels = [
         {
-          name: "gemini-2.0-flash",
+          name: "gemini-2.5-flash-preview-05-20",
           displayName: "Gemini 2.0 Flash",
           description: "Latest and most capable model for all text tasks",
           inputTokenLimit: 1000000,
@@ -78,44 +80,22 @@ export class GeminiApiService {
   }
   public async translateText(
     text: string,
-    targetLanguage: string = "uz",
     sourceLanguage: string = "auto",
-    context?: string,
   ): Promise<GeminiTranslationResult> {
-    const model = this.models.get("gemini-2.0-flash");
+    const model = this.models.get("gemini-2.5-flash-preview-05-20");
     if (!model) {
       throw new Error("Gemini 2.0 Flash model not initialized");
     }
 
     try {
-      const contextPrompt = context ? `Context: ${context}\n\n` : "";
-      const prompt = `${contextPrompt}Translate the following text from ${
-        sourceLanguage === "auto" ? "auto-detected language" : sourceLanguage
-      } to ${this.getLanguageName(targetLanguage)}. 
-
-Text to translate: "${text}"
-
-Please provide:
-1. The main translation
-2. Confidence level (0-1)
-3. Detected source language (if auto-detection was used)
-4. 2-3 alternative translations if applicable
-5. Any cultural or contextual notes
-
-Respond in the following JSON format:
-{
-  "translatedText": "main translation here",
-  "confidence": 0.95,
-  "detectedLanguage": "detected language code",
-  "alternativeTranslations": ["alt1", "alt2", "alt3"],
-  "culturalNotes": "any relevant cultural context"
-}`;
+      const prompt = ` Translate the following text from ${sourceLanguage} to Uzbek. Provide only the translation in JSON format:
+"${text}"`;
 
       const result = await model.generateContent(prompt);
+
       const response = await result.response;
       const text_response = response.text();
 
-      // Parse JSON response
       try {
         const parsedResult = JSON.parse(text_response);
         return {
@@ -125,7 +105,6 @@ Respond in the following JSON format:
           alternativeTranslations: parsedResult.alternativeTranslations || [],
         };
       } catch {
-        // Fallback if JSON parsing fails
         return {
           translatedText: text_response,
           confidence: 0.7,
@@ -154,7 +133,7 @@ Respond in the following JSON format:
       language?: string;
     },
   ): Promise<GeminiAudioAnalysis> {
-    const model = this.models.get("gemini-2.0-flash");
+    const model = this.models.get("gemini-2.5-flash-preview-05-20");
     if (!model) {
       throw new Error("Gemini 2.0 Flash model not initialized");
     }
@@ -215,14 +194,12 @@ Respond in JSON format:
     }
   }
 
-  /**
-   * Generate contextual responses or improvements
-   */ public async generateContextualResponse(
+  public async generateContextualResponse(
     input: string,
     context: "translation" | "conversation" | "learning" | "correction",
     additionalParams?: Record<string, string | number | boolean>,
   ): Promise<string> {
-    const model = this.models.get("gemini-2.0-flash");
+    const model = this.models.get("gemini-2.5-flash-preview-05-20");
     if (!model) {
       throw new Error("Gemini 2.0 Flash model not initialized");
     }
@@ -283,10 +260,9 @@ Provide corrections with explanations for language learners.`;
   public async batchTranslate(
     texts: string[],
     targetLanguage: string = "uz",
-    sourceLanguage: string = "auto",
   ): Promise<GeminiTranslationResult[]> {
     const promises = texts.map((text) =>
-      this.translateText(text, targetLanguage, sourceLanguage),
+      this.translateText(text, targetLanguage),
     );
 
     try {
@@ -300,38 +276,10 @@ Provide corrections with explanations for language learners.`;
       );
     }
   }
-  private getLanguageName(code: string): string {
-    const languages: Record<string, string> = {
-      en: "English",
-      de: "German",
-      ru: "Russian",
-      ko: "Korean",
-      ja: "Japanese",
-      zh: "Chinese",
-      fr: "French",
-      es: "Spanish",
-      it: "Italian",
-      pt: "Portuguese",
-      nl: "Dutch",
-      sv: "Swedish",
-      no: "Norwegian",
-      da: "Danish",
-      fi: "Finnish",
-      pl: "Polish",
-      tr: "Turkish",
-      ar: "Arabic",
-      hi: "Hindi",
-      th: "Thai",
-      vi: "Vietnamese",
-      uz: "Uzbek",
-    };
-
-    return languages[code] || code;
-  }
 
   public async checkApiHealth(): Promise<boolean> {
     try {
-      const model = this.models.get("gemini-2.0-flash");
+      const model = this.models.get("gemini-2.5-flash-preview-05-20");
       if (!model) return false;
 
       const result = await model.generateContent('Hello, respond with "OK"');

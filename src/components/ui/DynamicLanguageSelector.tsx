@@ -67,12 +67,6 @@ export const DynamicLanguageSelector: React.FC<
         placeholder="Select language"
         style={{ width: "100%", maxWidth: "250px" }}
       />
-
-      {type === "input" && languages.length <= 1 && (
-        <p className="language-note">
-          Only Uzbek is supported for speech input
-        </p>
-      )}
     </ConfigProvider>
   );
 };

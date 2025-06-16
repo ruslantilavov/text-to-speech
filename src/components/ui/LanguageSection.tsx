@@ -21,13 +21,11 @@ export const LanguageSection: React.FC<LanguageSectionProps> = ({
   language,
   title,
   finalText,
-  interimText,
   isInputSection = false,
   onPlayAudio,
 }) => {
   const handlePlayAudio = () => {
     if (onPlayAudio && finalText) {
-      // Extract text if it's not an input section
       const textToPlay = isInputSection
         ? finalText
         : extractTranslatedText(finalText);
@@ -60,11 +58,6 @@ export const LanguageSection: React.FC<LanguageSectionProps> = ({
         <p className="final-text">
           {isInputSection ? finalText : extractTranslatedText(finalText)}
         </p>
-        {interimText && (
-          <p className="interim-text">
-            {isInputSection ? interimText : extractTranslatedText(interimText)}
-          </p>
-        )}
       </div>
     </div>
   );
