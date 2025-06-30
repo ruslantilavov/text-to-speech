@@ -12,8 +12,7 @@ export interface EnhancedTranslationResult {
 }
 
 export async function translateTextEnhanced(
-  englishText: string,
-  context?: string,
+  englishText: string
 ): Promise<EnhancedTranslationResult> {
   const text = englishText.toLowerCase().trim();
 
@@ -23,23 +22,22 @@ export async function translateTextEnhanced(
       throw new Error("Gemini API is not available");
     }
 
-    return await translateWithGemini(text, context);
+    return await translateWithGemini(text);
   } catch (error) {
     console.error("Translation failed:", error);
     throw new Error(
       `Translation failed: ${
         error instanceof Error ? error.message : "Unknown error"
-      }`,
+      }`
     );
   }
 }
 
 async function translateWithGemini(
-  text: string,
-  context?: string,
+  text: string
 ): Promise<EnhancedTranslationResult> {
   try {
-    const result = await geminiApi.translateText(text, "uz", "en", context);
+    const result = await geminiApi.translateText(text, "en");
 
     return {
       translatedText: result.translatedText,
@@ -53,13 +51,13 @@ async function translateWithGemini(
     throw new Error(
       `Gemini translation failed: ${
         error instanceof Error ? error.message : "Unknown error"
-      }`,
+      }`
     );
   }
 }
 
 export async function batchTranslateEnhanced(
-  texts: string[],
+  texts: string[]
 ): Promise<EnhancedTranslationResult[]> {
   const promises = texts.map((text) => translateTextEnhanced(text));
   return Promise.all(promises);

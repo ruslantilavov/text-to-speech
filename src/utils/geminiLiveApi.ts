@@ -13,7 +13,7 @@ export interface GeminiRealTimeService {
   };
   streamingTranslation: (
     text: string,
-    onChunk: (chunk: string) => void,
+    onChunk: (chunk: string) => void
   ) => Promise<void>;
 }
 
@@ -29,7 +29,7 @@ export function initializeGeminiRealTime(): void {
 export function getGeminiRealTime(): GeminiRealTimeService | null {
   if (!geminiService) {
     console.warn(
-      "Gemini service not initialized. Call initializeGeminiRealTime() first.",
+      "Gemini service not initialized. Call initializeGeminiRealTime() first."
     );
     return null;
   }
@@ -44,14 +44,13 @@ export function getGeminiRealTime(): GeminiRealTimeService | null {
         try {
           // Extract text from translation prompt
           const textMatch = prompt.match(
-            /Translate the following English text to Uzbek\. Provide only the translation:\s*"(.+)"/,
+            /Translate the following English text to Uzbek\. Provide only the translation:\s*"(.+)"/
           );
           const textToTranslate = textMatch ? textMatch[1] : prompt;
 
           const result = await geminiService.translateText(
             textToTranslate,
-            "en",
-            "uz",
+            "en"
           );
 
           return {
@@ -67,14 +66,14 @@ export function getGeminiRealTime(): GeminiRealTimeService | null {
     },
     streamingTranslation: async (
       text: string,
-      onChunk: (chunk: string) => void,
+      onChunk: (chunk: string) => void
     ) => {
       if (!geminiService) {
         throw new Error("Gemini service not available");
       }
 
       try {
-        const result = await geminiService.translateText(text, "en", "uz");
+        const result = await geminiService.translateText(text, "en");
         onChunk(result.translatedText);
       } catch (error) {
         console.error("Streaming translation error:", error); // Fallback: return original text
