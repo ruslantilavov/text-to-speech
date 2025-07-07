@@ -1,0 +1,396 @@
+/* Landing Page Styles */
+.landing-page {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 120px 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+.hero-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.hero-title {
+  color: white !important;
+  font-size: 3.5rem !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  margin-bottom: 24px !important;
+}
+
+.hero-subtitle {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: 1.25rem !important;
+  line-height: 1.6 !important;
+  margin-bottom: 32px !important;
+}
+
+.hero-cta {
+  background: #ff6b35 !important;
+  border-color: #ff6b35 !important;
+  height: 56px !important;
+  padding: 0 32px !important;
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  border-radius: 28px !important;
+  box-shadow: 0 8px 24px rgba(255, 107, 53, 0.3) !important;
+  transition: all 0.3s ease !important;
+}
+
+.hero-cta:hover {
+  background: #e55a2b !important;
+  border-color: #e55a2b !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 12px 32px rgba(255, 107, 53, 0.4) !important;
+}
+
+.hero-visual {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.phone-mockup {
+  width: 300px;
+  height: 600px;
+  background: linear-gradient(145deg, #f0f0f0, #ffffff);
+  border-radius: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.phone-mockup::before {
+  content: "";
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 6px;
+  background: #333;
+  border-radius: 3px;
+}
+
+.play-icon {
+  font-size: 80px;
+  color: #667eea;
+}
+
+/* Problem & Solution Section */
+.problem-solution-section {
+  padding: 100px 0;
+  background: #f8fafc;
+}
+
+/* Features Section */
+.features-section {
+  padding: 100px 0;
+  background: white;
+}
+
+.feature-card {
+  height: 100%;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+  border: none !important;
+  transition: all 0.3s ease !important;
+}
+
+.feature-card:hover {
+  transform: translateY(-8px) !important;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12) !important;
+}
+
+.feature-content {
+  text-align: center;
+  padding: 24px;
+}
+
+.feature-icon {
+  font-size: 48px;
+  color: #667eea;
+  margin-bottom: 24px;
+  display: block;
+}
+
+/* Benefits Section */
+.benefits-section {
+  padding: 100px 0;
+  background: #f8fafc;
+}
+
+.benefit-item {
+  text-align: center;
+  padding: 32px;
+}
+
+.benefit-icon {
+  font-size: 64px;
+  color: #ff6b35;
+  margin-bottom: 24px;
+  display: block;
+}
+
+/* How It Works Section */
+.how-it-works-section {
+  padding: 100px 0;
+  background: white;
+}
+
+.step-item {
+  text-align: center;
+  padding: 24px;
+}
+
+.step-number {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  font-size: 2rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+}
+
+/* Use Cases Section */
+.use-cases-section {
+  padding: 100px 0;
+  background: #f8fafc;
+}
+
+.usecase-card {
+  height: 100%;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+  border: none !important;
+  transition: all 0.3s ease !important;
+}
+
+.usecase-card:hover {
+  transform: translateY(-8px) !important;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12) !important;
+}
+
+.usecase-content {
+  text-align: center;
+  padding: 24px;
+}
+
+.usecase-icon {
+  font-size: 48px;
+  color: #ff6b35;
+  margin-bottom: 24px;
+  display: block;
+}
+
+/* Final CTA Section */
+.final-cta-section {
+  padding: 100px 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  text-align: center;
+}
+
+.cta-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.cta-title {
+  color: white !important;
+  font-size: 2.5rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 24px !important;
+}
+
+.cta-subtitle {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: 1.25rem !important;
+  margin-bottom: 32px !important;
+}
+
+.cta-button {
+  background: #ff6b35 !important;
+  border-color: #ff6b35 !important;
+  height: 56px !important;
+  padding: 0 32px !important;
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  border-radius: 28px !important;
+  box-shadow: 0 8px 24px rgba(255, 107, 53, 0.3) !important;
+  transition: all 0.3s ease !important;
+  margin-bottom: 24px !important;
+}
+
+.cta-button:hover {
+  background: #e55a2b !important;
+  border-color: #e55a2b !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 12px 32px rgba(255, 107, 53, 0.4) !important;
+}
+
+.social-proof {
+  margin-top: 24px;
+}
+
+.social-proof-text {
+  color: rgba(255, 255, 255, 0.8) !important;
+  font-size: 1rem !important;
+}
+
+/* FAQ Section */
+.faq-section {
+  padding: 100px 0;
+  background: white;
+}
+
+.faq-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Section Titles */
+.section-title {
+  font-size: 2.5rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 48px !important;
+  color: #1a202c !important;
+}
+
+.section-description {
+  font-size: 1.125rem !important;
+  line-height: 1.7 !important;
+  color: #4a5568 !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+
+  .hero-title {
+    font-size: 2.5rem !important;
+  }
+
+  .hero-subtitle {
+    font-size: 1.125rem !important;
+  }
+
+  .phone-mockup {
+    width: 250px;
+    height: 500px;
+  }
+
+  .section-title {
+    font-size: 2rem !important;
+  }
+
+  .feature-icon,
+  .usecase-icon {
+    font-size: 40px;
+  }
+
+  .benefit-icon {
+    font-size: 56px;
+  }
+
+  .step-number {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 16px;
+  }
+
+  .hero-section,
+  .features-section,
+  .benefits-section,
+  .how-it-works-section,
+  .use-cases-section,
+  .final-cta-section,
+  .faq-section,
+  .problem-solution-section {
+    padding: 60px 0;
+  }
+
+  .hero-title {
+    font-size: 2rem !important;
+  }
+
+  .section-title {
+    font-size: 1.75rem !important;
+  }
+}
+
+/* Ant Design Overrides */
+.ant-card-body {
+  padding: 0 !important;
+}
+
+.ant-collapse {
+  background: transparent !important;
+  border: none !important;
+}
+
+.ant-collapse > .ant-collapse-item {
+  border-bottom: 1px solid #f0f0f0 !important;
+}
+
+.ant-collapse > .ant-collapse-item > .ant-collapse-header {
+  padding: 24px 0 !important;
+  font-size: 1.125rem !important;
+  font-weight: 600 !important;
+}
+
+.ant-collapse-content > .ant-collapse-content-box {
+  padding: 0 0 24px 0 !important;
+}
+
+.ant-typography h4 {
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  margin-bottom: 16px !important;
+  color: #1a202c !important;
+}
+
+.ant-typography p {
+  margin-bottom: 0 !important;
+}

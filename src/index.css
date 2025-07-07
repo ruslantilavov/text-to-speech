@@ -1,10 +1,10 @@
 :root {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  
+
   color-scheme: light;
   color: #333;
   background-color: #fff;
@@ -23,9 +23,18 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  scroll-behavior: smooth;
 }
 
 #root {
   min-height: 100vh;
+}
+
+/* Global Antd overrides for modern design */
+.ant-btn {
+  font-family: inherit;
+}
+
+.ant-typography {
+  font-family: inherit;
 }
