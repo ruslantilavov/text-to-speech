@@ -7,7 +7,6 @@ import {
   GlobalOutlined,
   TeamOutlined,
   BookOutlined,
-  DownloadOutlined,
   PlayCircleOutlined,
   CheckCircleOutlined,
   QuestionCircleOutlined,
