@@ -2,7 +2,7 @@ import { GenerativeModel, GoogleGenerativeAI } from "@google/generative-ai";
 
 const API_KEY =
   import.meta.env.VITE_GEMINI_API_KEY ||
-  "AIzaSyDgIBIg66x6O4VcpQMQelBe7buzZ0ENE_c";
+  "AIzaSyBuwaVFpcL7rRrsWwwLE-M3LGwnirFTrjc";
 
 export interface GeminiTranslationResult {
   translatedText: string;
@@ -37,9 +37,9 @@ export class GeminiApiService {
   private availableModels: GeminiModelInfo[] = [];
 
   constructor() {
-    if (!API_KEY || API_KEY === "AIzaSyDgIBIg66x6O4VcpQMQelBe7buzZ0ENE_c") {
+    if (!API_KEY || API_KEY === "AIzaSyBuwaVFpcL7rRrsWwwLE-M3LGwnirFTrjc") {
       console.warn(
-        "Gemini API key not found. Please set VITE_GEMINI_API_KEY in your environment variables.",
+        "Gemini API key not found. Please set VITE_GEMINI_API_KEY in your environment variables."
       );
     }
     this.genAI = new GoogleGenerativeAI(API_KEY);
@@ -51,7 +51,7 @@ export class GeminiApiService {
         "gemini-2.5-flash-preview-05-20",
         this.genAI.getGenerativeModel({
           model: "gemini-2.5-flash-preview-05-20",
-        }),
+        })
       );
 
       this.availableModels = [
@@ -80,7 +80,7 @@ export class GeminiApiService {
   }
   public async translateText(
     text: string,
-    sourceLanguage: string = "auto",
+    sourceLanguage: string = "auto"
   ): Promise<GeminiTranslationResult> {
     const model = this.models.get("gemini-2.5-flash-preview-05-20");
     if (!model) {
@@ -117,7 +117,7 @@ export class GeminiApiService {
       throw new Error(
         `Translation failed: ${
           error instanceof Error ? error.message : "Unknown error"
-        }`,
+        }`
       );
     }
   }
@@ -131,7 +131,7 @@ export class GeminiApiService {
       duration?: number;
       sampleRate?: number;
       language?: string;
-    },
+    }
   ): Promise<GeminiAudioAnalysis> {
     const model = this.models.get("gemini-2.5-flash-preview-05-20");
     if (!model) {
@@ -189,7 +189,7 @@ Respond in JSON format:
       throw new Error(
         `Audio analysis failed: ${
           error instanceof Error ? error.message : "Unknown error"
-        }`,
+        }`
       );
     }
   }
@@ -197,7 +197,7 @@ Respond in JSON format:
   public async generateContextualResponse(
     input: string,
     context: "translation" | "conversation" | "learning" | "correction",
-    additionalParams?: Record<string, string | number | boolean>,
+    additionalParams?: Record<string, string | number | boolean>
   ): Promise<string> {
     const model = this.models.get("gemini-2.5-flash-preview-05-20");
     if (!model) {
@@ -252,17 +252,17 @@ Provide corrections with explanations for language learners.`;
       throw new Error(
         `Failed to generate response: ${
           error instanceof Error ? error.message : "Unknown error"
-        }`,
+        }`
       );
     }
   }
 
   public async batchTranslate(
     texts: string[],
-    targetLanguage: string = "uz",
+    targetLanguage: string = "uz"
   ): Promise<GeminiTranslationResult[]> {
     const promises = texts.map((text) =>
-      this.translateText(text, targetLanguage),
+      this.translateText(text, targetLanguage)
     );
 
     try {
@@ -272,7 +272,7 @@ Provide corrections with explanations for language learners.`;
       throw new Error(
         `Batch translation failed: ${
           error instanceof Error ? error.message : "Unknown error"
-        }`,
+        }`
       );
     }
   }

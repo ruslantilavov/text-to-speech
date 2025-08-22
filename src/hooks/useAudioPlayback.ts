@@ -13,16 +13,11 @@ export const useAudioPlayback = (): UseAudioPlaybackReturn => {
   const playAudio = useCallback(
     async (text: string, languageCode: string): Promise<void> => {
       const readText = extractTranslatedText(text);
-      console.log(`Playing audio for ${languageCode}:`, text);
-      console.log("Clean text:", readText);
-
       try {
         if (currentAudio.current) {
           currentAudio.current.pause();
           currentAudio.current = null;
         }
-
-        // First try using the TTS API for Uzbek
         if (languageCode === "uz") {
           try {
             const response = await fetch(API_CONFIG.TTS_API_URL, {
@@ -53,25 +48,21 @@ export const useAudioPlayback = (): UseAudioPlaybackReturn => {
                 currentAudio.current = null;
               });
 
-              return; // If API call was successful, return early
+              return;
             }
           } catch (apiError) {
             console.error("TTS API error:", apiError);
-            // Fall through to browser's speech synthesis
           }
         }
 
-        // For all languages or if API fails, use browser's speech synthesis as fallback
         if (readText) {
           const synth = window.speechSynthesis;
           const utterance = new SpeechSynthesisUtterance(readText);
-
-          // Try to find a voice for the target language
           const voices = synth.getVoices();
           const targetVoice = voices.find(
             (voice) =>
               voice.lang.startsWith(languageCode) ||
-              voice.lang.startsWith(languageCode.split("-")[0]),
+              voice.lang.startsWith(languageCode.split("-")[0])
           );
 
           if (targetVoice) {
@@ -85,14 +76,14 @@ export const useAudioPlayback = (): UseAudioPlaybackReturn => {
         console.error(ERROR_MESSAGES.AUDIO_PLAYBACK_FAILED, error);
       }
     },
-    [],
+    []
   );
 
   const playUzbekAudio = useCallback(
     async (text: string): Promise<void> => {
       return playAudio(text, "uz");
     },
-    [playAudio],
+    [playAudio]
   );
 
   const stopAudio = useCallback(() => {
@@ -100,7 +91,6 @@ export const useAudioPlayback = (): UseAudioPlaybackReturn => {
       currentAudio.current.pause();
       currentAudio.current = null;
     }
-    // Also stop speech synthesis
     window.speechSynthesis.cancel();
   }, []);
 
